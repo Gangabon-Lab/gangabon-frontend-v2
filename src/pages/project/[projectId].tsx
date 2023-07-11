@@ -23,7 +23,7 @@ const App = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [tick, setTick] = useState<number>(0)
   const currentProject = projects?.find(
-    (project) => project.fields["Project ID"][0] === query.projectId
+    (project) => project.id === query.projectId
   )
 
   const increaseTick = () => setTick(tick + 1)
@@ -32,15 +32,17 @@ const App = () => {
     if (!currentProject) return
     const getProject = async () => {
       const data = await getApplication(
-        Number(currentProject.fields["Verified ID"]) - 1
+        Number(currentProject.fields["Issue ID"]) - 1
       )
+
+      console.log(data)
 
       setApplication(data)
     }
 
     const getUserIsVote = async () => {
       const data = await getIsVote(
-        Number(currentProject.fields["Verified ID"]) - 1
+        Number(currentProject.fields["Issue ID"]) - 1
       )
 
       setIsVote(data || false)
@@ -56,7 +58,7 @@ const App = () => {
     setIsLoading(true)
     try {
       const tx = await vote(
-        Number(currentProject.fields["Verified ID"]) - 1,
+        Number(currentProject.fields["Issue ID"]) - 1,
         userVote
       )
 
@@ -81,7 +83,11 @@ const App = () => {
       <main className="isolate">
         <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-10 lg:max-w-7xl lg:px-8">
           <h2 className="text-2xl font-bold tracking-tight text-gray-900">
-            {currentProject?.fields["Company Name (from Audited byy)"][0]}
+            {
+              currentProject?.fields[
+                "Legal Business Name (from Owned by company ID) (from Device ID)"
+              ][0]
+            }
           </h2>
         </div>
 
@@ -132,7 +138,7 @@ const App = () => {
                   Audited By
                 </dt>
                 <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                  {currentProject?.fields["Full Name (from Audited byy)"]}
+                  {currentProject?.fields["Audited by"]}
                 </dd>
               </div>
               <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
@@ -140,7 +146,7 @@ const App = () => {
                   Position Title
                 </dt>
                 <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                  {currentProject?.fields["Position Title (from Audited byy)"]}
+                  {currentProject?.fields["Position Title (from Audited by)"]}
                 </dd>
               </div>
               <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
@@ -148,55 +154,123 @@ const App = () => {
                   Company Name
                 </dt>
                 <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                  {currentProject?.fields["Company Name (from Audited byy)"]}
+                  {currentProject?.fields["Company Name (from Audited by)"]}
                 </dd>
               </div>
               <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                 <dt className="text-sm font-medium leading-6 text-gray-900">
-                  CO2 Calculator - Additionality
-                </dt>
-                <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                  {currentProject?.fields["CO2 Calculator - Additionality"]}
-                </dd>
-              </div>
-              <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                <dt className="text-sm font-medium leading-6 text-gray-900">
-                  CO2 Calculator - Baseline Scenario
-                </dt>
-                <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                  {currentProject?.fields["CO2 Calculator - Baseline Scenario"]}
-                </dd>
-              </div>
-              <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                <dt className="text-sm font-medium leading-6 text-gray-900">
-                  CO2 Calculator - Amount of CO2 Emissions Avoided
+                  Website URL
                 </dt>
                 <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
                   {
                     currentProject?.fields[
-                      "CO2 Calculator - Amount of CO2 Emissions Avoided"
+                      "Website URL (from Owned by company ID) (from Device ID)"
                     ]
                   }
                 </dd>
               </div>
               <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                 <dt className="text-sm font-medium leading-6 text-gray-900">
-                  Length Period of the Project Carbon Credit
+                  Company's Wallet Address
                 </dt>
                 <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
                   {
                     currentProject?.fields[
-                      "Length Period of the Project Carbon Credit"
+                      "Wallet Address (from Owned by company ID) (from Device ID)"
                     ]
                   }
                 </dd>
               </div>
               <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                 <dt className="text-sm font-medium leading-6 text-gray-900">
-                  Risk Assessments
+                  Project Type
                 </dt>
                 <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                  {currentProject?.fields["Risk Assessments"]}
+                  {currentProject?.fields["Project Type (from Device ID)"]}
+                </dd>
+              </div>
+              <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                <dt className="text-sm font-medium leading-6 text-gray-900">
+                  Production Facility Name
+                </dt>
+                <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                  {
+                    currentProject?.fields[
+                      "Production Facility Name (from Device ID)"
+                    ]
+                  }
+                </dd>
+              </div>
+              <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                <dt className="text-sm font-medium leading-6 text-gray-900">
+                  Facility Address
+                </dt>
+                <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                  {currentProject?.fields["Facility Address (from Device ID)"]}
+                </dd>
+              </div>
+              <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                <dt className="text-sm font-medium leading-6 text-gray-900">
+                Sample metering evidence
+                </dt>
+                <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                  {currentProject?.fields["Sample metering evidence (from Device ID)"]}
+                </dd>
+              </div>
+              <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                <dt className="text-sm font-medium leading-6 text-gray-900">
+                Total product during period in MWh
+                </dt>
+                <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                  {currentProject?.fields["Total product during period in MWh"]}
+                </dd>
+              </div>
+              <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                <dt className="text-sm font-medium leading-6 text-gray-900">
+                dREC applied for
+                </dt>
+                <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                  {currentProject?.fields["dREC applied for"]}
+                </dd>
+              </div>
+              <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                <dt className="text-sm font-medium leading-6 text-gray-900">
+                Connect to grid
+                </dt>
+                <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                  {currentProject?.fields["Connect to grid? (from Device ID)"]}
+                </dd>
+              </div>
+              <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                <dt className="text-sm font-medium leading-6 text-gray-900">
+                Proof that the Registrant is the owner of the energy attributes
+                </dt>
+                <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                  {currentProject?.fields["Proof that the Registrant is the owner of the energy attributes (from Device ID)"]}
+                </dd>
+              </div>
+              <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                <dt className="text-sm font-medium leading-6 text-gray-900">
+                Expected form of volume evidence
+                </dt>
+                <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                  {currentProject?.fields["Expected form of volume evidence (from Device ID)"]}
+                </dd>
+              </div>
+              <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                <dt className="text-sm font-medium leading-6 text-gray-900">
+                Start date
+                </dt>
+                <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                  {currentProject?.fields["Start date"]}
+                </dd>
+              </div>
+              <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                <dt className="text-sm font-medium leading-6 text-gray-900">
+                End date
+                </dt>
+                <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                  {currentProject?.fields["End date"]}
                 </dd>
               </div>
               <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
